@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
+    "start": "node .",
     "test": "npx jest --passWithNoTests",
     "test:dev": "npx jest --watchAll --passWithNoTests",
     "test:coverage": "npx jest --coverage --passWithNoTests",
@@ -16,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
@@ -31,6 +33,15 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "lint-staged": "^13.1.2"
+    "@types/debug": "^4.1.7",
+    "@types/express": "^4.17.17",
+    "@types/morgan": "^1.9.4",
+    "chalk": "^5.2.0",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "lint-staged": "^13.1.2",
+    "morgan": "^1.10.0"
   }
 }
