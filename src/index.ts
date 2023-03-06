@@ -13,7 +13,7 @@ try {
   debug(chalk.bgGreen(`Start with server 'http://localhost:${port}'`));
 
   await connectDatabase(mongoDdUrl);
-  debug(chalk.bgGreen("Connected to data base"));
+  debug(chalk.bgGreen("Connected to database"));
 } catch (error) {
   debug(chalk.bgRed(error.message));
 }
