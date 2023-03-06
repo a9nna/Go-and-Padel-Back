@@ -11,6 +11,10 @@ module.exports = {
       extends: ["xo-typescript", "prettier"],
       files: ["*.ts"],
     },
+    {
+      files: ["src/**/models/**/*.ts"],
+      rules: { "@typescript-eslint/naming-convention": "off" },
+    },
   ],
   parserOptions: {
     ecmaVersion: "latest",
