@@ -7,7 +7,7 @@ module.exports = {
 	extends: ['xo', 'prettier'],
 	overrides: [
 		{
-			extends: ['xo-typescript'],
+			extends: ['xo-typescript', "prettier"],
 			files: ['*.ts'],
 		},
 	],
