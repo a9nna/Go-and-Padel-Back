@@ -23,7 +23,7 @@ describe("Given a notFoundError middleware", () => {
 
 describe("Given a generalError function", () => {
   describe("When it receives a response object and an error with status 500 and error publicMessage 'Something went wrong'", () => {
-    test("Then it should call its status method with 500 and the error publicMessaje 'Something went wrong'", () => {
+    test("Then it should call its status method with 500 and its json method with the error public message 'Something went wrong'", () => {
       const statusCode = 500;
       const publicMessage = "There has been an error";
       const error = new CustomError(
@@ -38,6 +38,19 @@ describe("Given a generalError function", () => {
       expect(res.json).toHaveBeenCalledWith({
         error: publicMessage,
       });
+    });
+  });
+
+  describe("When it receives a response object", () => {
+    test("Then it should call its status method with 500 and its jeson method with the error public message 'Something went wrong'", () => {
+      const statusCode = 500;
+      const publicMessage = "Something went wrong";
+      const error = {} as CustomError;
+
+      generalError(error, req, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(statusCode);
+      expect(res.json).toHaveBeenCalledWith({ error: publicMessage });
     });
   });
 });

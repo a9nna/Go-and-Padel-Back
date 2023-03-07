@@ -4,7 +4,7 @@ import chalk from "chalk";
 import startServer from "./server/startServer.js";
 import connectDatabase from "./database/connectDatabase.js";
 
-const debug = createDebug("app");
+const debug = createDebug("go-and-padel:api");
 const port = process.env.PORT!;
 const mongoDdUrl = process.env.MONGODB_CONNECTION_URL!;
 
