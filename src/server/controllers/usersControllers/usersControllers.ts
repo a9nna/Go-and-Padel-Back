@@ -1,8 +1,9 @@
+import "../../../loadEnvironments.js";
 import { type NextFunction, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { CustomError } from "../../../CustomError/CustomError";
-import User from "../../../database/models/User";
+import { CustomError } from "../../../CustomError/CustomError.js";
+import User from "../../../database/models/User.js";
 import { type UserCredentials } from "../../../types";
 
 export const loginUser = async (
@@ -16,7 +17,7 @@ export const loginUser = async (
 ) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email, password }).exec();
+  const user = await User.findOne({ email }).exec();
 
   if (!user) {
     const customError = new CustomError(
