@@ -1,4 +1,5 @@
 import { type NextFunction, type Request, type Response } from "express";
+import { ValidationError, type errors } from "express-validation";
 import { CustomError } from "../../CustomError/CustomError";
 import { generalError, notFoundError } from "./errorMiddleware";
 
@@ -50,6 +51,43 @@ describe("Given a generalError function", () => {
       generalError(error, req, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
+      expect(res.json).toHaveBeenCalledWith({ error: publicMessage });
+    });
+  });
+
+  describe("When it receives an error object generated due to missing password in credentials", () => {
+    test("Then the erro public message will be '\"password\" is required'", () => {
+      const error: errors = {
+        body: [
+          {
+            name: "ValidationError",
+            isJoi: true,
+            annotate(stripColors) {
+              return "";
+            },
+            _original: "",
+            message: "'password' is required",
+            details: [
+              {
+                message: "",
+                path: [""],
+                type: "",
+              },
+            ],
+          },
+        ],
+      };
+
+      const publicMessage = "'password' is required";
+      const newError = new ValidationError(error, {});
+
+      generalError(
+        newError as unknown as CustomError,
+        req,
+        res as Response,
+        next
+      );
+
       expect(res.json).toHaveBeenCalledWith({ error: publicMessage });
     });
   });
