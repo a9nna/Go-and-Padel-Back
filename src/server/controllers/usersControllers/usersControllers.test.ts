@@ -16,12 +16,18 @@ describe("Given the loginUser function", () => {
       const statusCode = 200;
       const token = "";
 
-      const req = { body: userCredentials } as Partial<Request>;
+      const req = {} as Request<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        UserCredentials
+      >;
       const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
       } as Partial<Response>;
       const next = () => ({});
+
+      req.body = userCredentials;
 
       User.findOne = jest.fn().mockImplementation(() => ({
         exec: jest.fn().mockResolvedValue(userCredentials),
@@ -29,7 +35,7 @@ describe("Given the loginUser function", () => {
       bcrypt.compare = jest.fn().mockReturnValue(true);
 
       jwt.sign = jest.fn().mockImplementation(() => token);
-      await loginUser(req as Request, res as Response, next);
+      await loginUser(req, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
       expect(res.json).toHaveBeenCalledWith({ token });
@@ -40,15 +46,21 @@ describe("Given the loginUser function", () => {
     test("Then it should call the next received function with a CustomError and the message 'Wrong credentials'", async () => {
       const customError = new CustomError("Wrong credentials", 401, "");
 
-      const req = { body: userCredentials } as Partial<Request>;
+      const req = {} as Request<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        UserCredentials
+      >;
       const res = {} as Response;
       const next = jest.fn() as NextFunction;
+
+      req.body = userCredentials;
 
       User.findOne = jest.fn().mockImplementation(() => ({
         exec: jest.fn().mockResolvedValue(userCredentials),
       }));
       bcrypt.compare = jest.fn().mockReturnValue(false);
-      await loginUser(req as Request, res, next);
+      await loginUser(req, res, next);
 
       expect(next).toHaveBeenCalledWith(customError);
     });
@@ -58,14 +70,20 @@ describe("Given the loginUser function", () => {
     test("Then it should call the next received function with a CustomError and the message 'User doesn't exists'", async () => {
       const customError = new CustomError("User doesn't exists", 401, "");
 
-      const req = { body: userCredentials } as Partial<Request>;
+      const req = {} as Request<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        UserCredentials
+      >;
       const res = {} as Response;
       const next = jest.fn() as NextFunction;
+
+      req.body = userCredentials;
 
       User.findOne = jest.fn().mockImplementation(() => ({
         exec: jest.fn().mockResolvedValue(undefined),
       }));
-      await loginUser(req as Request, res, next);
+      await loginUser(req, res, next);
 
       expect(next).toHaveBeenCalledWith(customError);
     });
