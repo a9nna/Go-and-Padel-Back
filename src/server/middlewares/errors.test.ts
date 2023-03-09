@@ -3,17 +3,17 @@ import { ValidationError, type errors } from "express-validation";
 import { CustomError } from "../../CustomError/CustomError";
 import { generalError, notFoundError } from "./errors";
 
-const res = {
+const res: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn(),
-} as Partial<Response>;
-const req = {} as Request;
-const next = jest.fn() as NextFunction;
+};
+const req: Partial<Request> = {};
+const next: NextFunction = jest.fn();
 
 describe("Given a notFoundError middleware", () => {
   describe("When it receives a response", () => {
     test("Then it should call the received next function with the error passed", async () => {
-      notFoundError(req, res as Response, next);
+      notFoundError(req as Request, res as Response, next);
 
       const error = new CustomError("Path not found", 404, "");
 
@@ -33,7 +33,7 @@ describe("Given a generalError function", () => {
         publicMessage
       );
 
-      generalError(error, req, res as Response, next);
+      generalError(error, req as Request, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
       expect(res.json).toHaveBeenCalledWith({
@@ -46,9 +46,9 @@ describe("Given a generalError function", () => {
     test("Then it should call its status method with 500 and its jeson method with the error public message 'Something went wrong'", () => {
       const statusCode = 500;
       const publicMessage = "Something went wrong";
-      const error = {} as CustomError;
+      const error: Partial<CustomError> = {};
 
-      generalError(error, req, res as Response, next);
+      generalError(error as CustomError, req as Request, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
       expect(res.json).toHaveBeenCalledWith({ error: publicMessage });
@@ -83,7 +83,7 @@ describe("Given a generalError function", () => {
 
       generalError(
         newError as unknown as CustomError,
-        req,
+        req as Request,
         res as Response,
         next
       );
