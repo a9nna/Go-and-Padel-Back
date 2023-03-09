@@ -12,7 +12,7 @@ const startServer = async (port: number) =>
         error.message = `Error on starting the server. The port number ${port} is already in use`;
       }
 
-      reject(new Error(error.message));
+      reject(error.message);
     });
   });
 

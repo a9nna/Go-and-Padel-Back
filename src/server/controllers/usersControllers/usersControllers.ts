@@ -15,41 +15,29 @@ export const loginUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).exec();
+    const user = await User.findOne({ email }).exec();
 
-  if (!user) {
-    const customError = new CustomError(
-      "User doesn't exists",
-      401,
-      "Wrong credentials"
-    );
+    if (!user) {
+      throw new CustomError("User doesn't exists", 401, "Wrong credentials");
+    }
 
-    next(customError);
+    const comparison = await bcrypt.compare(password, user.password);
 
-    return;
+    if (!comparison) {
+      throw new CustomError("Wrong credentials", 401, "Wrong credentials");
+    }
+
+    const jwtPayload = {
+      sub: user?._id,
+    };
+
+    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!);
+
+    res.status(200).json({ token });
+  } catch (error) {
+    next(error);
   }
-
-  const comparison = await bcrypt.compare(password, user.password);
-
-  if (!comparison) {
-    const customError = new CustomError(
-      "Wrong credentials",
-      401,
-      "Wrong credentials"
-    );
-
-    next(customError);
-
-    return;
-  }
-
-  const jwtPayload = {
-    sub: user?._id,
-  };
-
-  const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!);
-
-  res.status(200).json({ token });
 };

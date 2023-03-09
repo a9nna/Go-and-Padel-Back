@@ -11,9 +11,9 @@ const connectDatabase = async (url: string) => {
     },
   });
 
-  try {
-    await mongoose.connect(url);
-  } catch (error) {
+  const databaseConnection = await mongoose.connect(url);
+
+  if (!databaseConnection) {
     throw new Error("Error while connecting to data base.");
   }
 };
