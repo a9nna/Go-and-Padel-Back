@@ -2,7 +2,7 @@ import "../loadEnvironments.js";
 import type cors from "cors";
 
 const allowedOrigins = [
-  "http://localhost:3000",
+  `${process.env.LOCAL_ORIGIN_URL!}`,
   `${process.env.DEPLOY_ORIGIN_URL!}`,
 ];
 
