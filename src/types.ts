@@ -9,3 +9,13 @@ export interface UserStructure {
   password: string;
   image: string;
 }
+
+export interface MatchStructure {
+  category: string;
+  date: Record<string, unknown>;
+  level: string;
+  paddleCourt: number;
+  signedPlayersNumber: number;
+  image: string;
+  allowedPlayersNumber: number;
+}
