@@ -1,6 +1,6 @@
 import { type NextFunction, type Request, type Response } from "express";
-import { CustomError } from "../../../CustomError/CustomError";
-import Match from "../../../database/models/Match";
+import { CustomError } from "../../../CustomError/CustomError.js";
+import Match from "../../../database/models/Match.js";
 
 export const getMatches = async (
   req: Request,
