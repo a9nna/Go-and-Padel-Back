@@ -12,7 +12,7 @@ export interface UserStructure {
 
 export interface MatchStructure {
   category: string;
-  date: Record<string, unknown>;
+  date: Date;
   level: string;
   paddleCourt: number;
   signedPlayersNumber: number;

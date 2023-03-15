@@ -4,6 +4,7 @@ import cors from "cors";
 import options from "./cors.js";
 import usersRouter from "./routers/usersRouters/usersRouters.js";
 import { generalError, notFoundError } from "./middlewares/errors.js";
+import matchesRouters from "./routers/matchesRouters/matchesRouters.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cors(options));
 app.use(express.json());
 
 app.use("/users", usersRouter);
+app.use("/matches", matchesRouters);
 
 app.use("/", notFoundError);
 app.use("/", generalError);
