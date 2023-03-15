@@ -7,7 +7,7 @@ import { getMatches } from "./matchesControllers";
 describe("Given the getMatch function", () => {
   const matches: MatchStructure = {
     category: "",
-    date: {},
+    date: new Date("1995-12-17T03:24:00"),
     level: "",
     paddleCourt: 7,
     signedPlayersNumber: 2,
