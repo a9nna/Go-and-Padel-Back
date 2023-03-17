@@ -23,3 +23,25 @@ export const getMatches = async (
     next(error);
   }
 };
+
+export const deleteMatchesById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { idMatch } = req.params;
+
+  try {
+    await Match.findByIdAndDelete({ _id: idMatch }).exec();
+
+    res.status(200).json({ idMatch });
+  } catch (error) {
+    const customError = new CustomError(
+      (error as Error).message,
+      500,
+      "Couldn't delete the match"
+    );
+
+    next(customError);
+  }
+};

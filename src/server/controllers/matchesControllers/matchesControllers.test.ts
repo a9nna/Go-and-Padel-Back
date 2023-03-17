@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from "express";
 import { CustomError } from "../../../CustomError/CustomError";
 import Match from "../../../database/models/Match";
 import { type MatchStructure } from "../../../types";
-import { getMatches } from "./matchesControllers";
+import { deleteMatchesById, getMatches } from "./matchesControllers";
 
 describe("Given the getMatch function", () => {
   const matches: MatchStructure = {
@@ -66,6 +66,68 @@ describe("Given the getMatch function", () => {
       }));
 
       await getMatches(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(customError);
+    });
+  });
+});
+
+describe("Given the deleteMatchesById function", () => {
+  describe("When it receives a req object with an idMatch in its params property", () => {
+    test("Then it should receives a response that call its status method with a 200", async () => {
+      const idMatchResult = "djaijdo23aqe3cdw3";
+      const expectedStatusCode = 200;
+
+      const req: Partial<Request> = { params: { idMatch: idMatchResult } };
+      const res: Partial<Response> = {
+        status: jest.fn(),
+      };
+      const next: NextFunction = () => ({});
+
+      Match.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(idMatchResult),
+      }));
+
+      await deleteMatchesById(req as Request, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+    });
+
+    test("Then it should receives a responce that call its json method with an object with idMatch property", async () => {
+      const idMatchResult = "djaijdo23aqe3cdw3";
+      const req: Partial<Request> = {
+        params: { idMatch: idMatchResult },
+      };
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(idMatchResult),
+      };
+      const next = jest.fn();
+
+      Match.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(idMatchResult),
+      }));
+
+      await deleteMatchesById(req as Request, res as Response, next);
+
+      expect(res.json).toHaveBeenCalledWith({ idMatch: idMatchResult });
+    });
+  });
+
+  describe("When it receives a req object without an idMatch in its params property", () => {
+    test("Then it should receives a next function that is called with a custom error with the error 'Cannot read properties of undefined (reading 'exec')'", async () => {
+      const idMatchResult = "djaijdo23aqe3cdw3";
+      const customError = new CustomError(
+        "Cannot read properties of undefined (reading 'exec')",
+        500,
+        "Couldn't delete the match"
+      );
+
+      const req: Partial<Request> = { params: { idMatch: idMatchResult } };
+      const res: Partial<Response> = {};
+      const next: NextFunction = jest.fn();
+
+      await deleteMatchesById(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(customError);
     });
