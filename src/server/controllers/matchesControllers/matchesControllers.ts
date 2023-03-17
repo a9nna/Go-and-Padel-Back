@@ -32,7 +32,7 @@ export const deleteMatchesById = async (
   const { idMatch } = req.params;
 
   try {
-    await Match.findByIdAndDelete({ id: idMatch }).exec();
+    await Match.findByIdAndDelete({ _id: idMatch }).exec();
 
     res.status(200).json({ idMatch });
   } catch (error) {
