@@ -1,3 +1,5 @@
+import { type Types } from "mongoose";
+
 export interface UserCredentials {
   email: string;
   password: string;
@@ -18,4 +20,8 @@ export interface MatchStructure {
   signedPlayersNumber: number;
   image: string;
   allowedPlayersNumber: number;
+}
+
+export interface MatchId {
+  _id: Types.ObjectId;
 }
