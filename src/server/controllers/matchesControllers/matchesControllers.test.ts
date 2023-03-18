@@ -2,7 +2,11 @@ import { type NextFunction, type Request, type Response } from "express";
 import { CustomError } from "../../../CustomError/CustomError";
 import Match from "../../../database/models/Match";
 import { type MatchStructure } from "../../../types";
-import { deleteMatchesById, getMatches } from "./matchesControllers";
+import {
+  createMatch,
+  deleteMatchesById,
+  getMatches,
+} from "./matchesControllers";
 
 describe("Given the getMatch function", () => {
   const matches: MatchStructure = {
@@ -115,10 +119,10 @@ describe("Given the deleteMatchesById function", () => {
   });
 
   describe("When it receives a req object without an idMatch in its params property", () => {
-    test("Then it should receives a next function that is called with a custom error with the error 'Cannot read properties of undefined (reading 'exec')'", async () => {
+    test("Then it should receives a next function that is called with a custom error with the error 'Couldn't delete the match'", async () => {
       const idMatchResult = "djaijdo23aqe3cdw3";
       const customError = new CustomError(
-        "Cannot read properties of undefined (reading 'exec')",
+        "Couldn't delete the match",
         500,
         "Couldn't delete the match"
       );
@@ -127,7 +131,125 @@ describe("Given the deleteMatchesById function", () => {
       const res: Partial<Response> = {};
       const next: NextFunction = jest.fn();
 
+      Match.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockRejectedValue(customError),
+      }));
+
       await deleteMatchesById(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(customError);
+    });
+  });
+});
+
+describe("Given the createMatch function", () => {
+  describe("When it receives a response object", () => {
+    test("Then it should call its method status with 201", async () => {
+      const match: MatchStructure = {
+        allowedPlayersNumber: 2,
+        category: "",
+        date: new Date(),
+        image: "",
+        level: "",
+        paddleCourt: 3,
+        signedPlayersNumber: 2,
+      };
+      const expectedStatus = 201;
+      const req: Partial<Request> = {
+        body: match,
+      };
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+      };
+      const next: NextFunction = () => ({});
+
+      Match.create = jest.fn();
+
+      await createMatch(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          MatchStructure
+        >,
+        res as Response,
+        next
+      );
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatus);
+    });
+
+    test("Then it should call its method json with an object with newMatch property", async () => {
+      const match: MatchStructure = {
+        allowedPlayersNumber: 2,
+        category: "",
+        date: new Date(),
+        image: "",
+        level: "",
+        paddleCourt: 3,
+        signedPlayersNumber: 2,
+      };
+      const req: Partial<Request> = {
+        body: match,
+      };
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next: NextFunction = () => ({});
+
+      Match.create = jest.fn();
+
+      await createMatch(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          MatchStructure
+        >,
+        res as Response,
+        next
+      );
+
+      expect(res.json).toHaveBeenCalledWith({ newMatch: match });
+    });
+  });
+
+  describe("When it doesn't receives a response object", () => {
+    test("Then it should receives a next function that is called with a custom error with the error 'Couldn't create the match'", async () => {
+      const match: MatchStructure = {
+        allowedPlayersNumber: 2,
+        category: "",
+        date: new Date(),
+        image: "",
+        level: "",
+        paddleCourt: 3,
+        signedPlayersNumber: 2,
+      };
+      const customError = new CustomError(
+        "Couldn't create the match",
+        500,
+        "Couldn't create the match"
+      );
+
+      const req: Partial<Request> = {
+        body: match,
+      };
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next: NextFunction = jest.fn();
+
+      Match.create = jest.fn().mockRejectedValue(customError);
+
+      await createMatch(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          MatchStructure
+        >,
+        res as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(customError);
     });
