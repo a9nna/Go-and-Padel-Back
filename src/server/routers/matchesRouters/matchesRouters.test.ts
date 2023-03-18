@@ -1,6 +1,6 @@
 import request from "supertest";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose, { type Document, type ObjectId } from "mongoose";
+import mongoose from "mongoose";
 import app from "../..";
 import connectDatabase from "../../../database/connectDatabase";
 import Match from "../../../database/models/Match";
@@ -59,6 +59,24 @@ describe("Given a DELETE '/matches/delete/:idMatch' endpoint", () => {
   describe("When it receives a request object without an id in its params property", () => {
     test("Then it responds with status 500", async () => {
       await request(app).delete(`/matches/delete/idMatch`).expect(500);
+    });
+  });
+});
+
+describe("Given a POST '/matches/create' endpoint", () => {
+  describe("When it receives a request object with a new match on its body property", () => {
+    test("Then it responds with status 201", async () => {
+      const match: MatchStructure = {
+        allowedPlayersNumber: 2,
+        category: "",
+        date: new Date(),
+        image: "",
+        level: "",
+        paddleCourt: 3,
+        signedPlayersNumber: 2,
+      };
+
+      await request(app).post("/matches/create").send(match).expect(201);
     });
   });
 });
