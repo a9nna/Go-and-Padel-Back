@@ -59,7 +59,7 @@ export const createMatch = async (
   try {
     const newMatch = req.body;
 
-    await Match.create({ newMatch });
+    await Match.create(newMatch);
 
     res.status(201).json({ newMatch });
   } catch (error) {
