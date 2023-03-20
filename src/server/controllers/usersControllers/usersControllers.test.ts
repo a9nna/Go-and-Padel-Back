@@ -15,6 +15,7 @@ describe("Given the loginUser function", () => {
     test("Then it should call the response status method with 200 and its json method with an object with a property token and its value", async () => {
       const statusCode = 200;
       const token = "";
+      const email = "";
 
       const req: Partial<Request> = {};
       const res: Partial<Response> = {
@@ -42,7 +43,7 @@ describe("Given the loginUser function", () => {
       );
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
-      expect(res.json).toHaveBeenCalledWith({ token });
+      expect(res.json).toHaveBeenCalledWith({ token, email });
     });
   });
 

@@ -32,11 +32,12 @@ export const loginUser = async (
 
     const jwtPayload = {
       sub: user?._id,
+      email: user.email,
     };
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!);
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, email });
   } catch (error) {
     next(error);
   }
