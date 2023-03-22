@@ -47,6 +47,7 @@ describe("Given a DELETE '/matches/delete/:idMatch' endpoint", () => {
     beforeAll(async () => {
       mockMatch = await Match.create(existentMatch);
     });
+
     test("Then it responds with status 200", async () => {
       const idMatch = mockMatch._id;
 
@@ -57,7 +58,7 @@ describe("Given a DELETE '/matches/delete/:idMatch' endpoint", () => {
   });
 
   describe("When it receives a request object without an id in its params property", () => {
-    test("Then it responds with status 500", async () => {
+    test("Then it receives a request object that calls it status method with 500", async () => {
       await request(app).delete(`/matches/delete/idMatch`).expect(500);
     });
   });
@@ -77,6 +78,28 @@ describe("Given a POST '/matches/create' endpoint", () => {
       };
 
       await request(app).post("/matches/create").send(match).expect(201);
+    });
+  });
+});
+
+describe("Given a GET '/matches/:idMatch' endpoint", () => {
+  let mockMatch: MatchId;
+
+  describe("When it receives a request object with an id in its params property", () => {
+    beforeAll(async () => {
+      mockMatch = await Match.create(existentMatch);
+    });
+
+    test("Then it responds with status 200", async () => {
+      const idMatch = mockMatch._id;
+
+      await request(app).get(`/matches/${idMatch.toString()}`).expect(200);
+    });
+  });
+
+  describe("When it receives a request object without an id in its params property", () => {
+    test("Then it receives a request object that calls it status method with 500", async () => {
+      await request(app).get(`/matches/idMatch`).expect(500);
     });
   });
 });
