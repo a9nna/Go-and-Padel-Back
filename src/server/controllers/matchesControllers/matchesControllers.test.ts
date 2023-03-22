@@ -5,10 +5,11 @@ import { type MatchStructure } from "../../../types";
 import {
   createMatch,
   deleteMatchesById,
+  getMatchById,
   getMatches,
 } from "./matchesControllers";
 
-describe("Given the getMatch function", () => {
+describe("Given the getMatches function", () => {
   const matches: MatchStructure = {
     category: "",
     date: new Date("1995-12-17T03:24:00"),
@@ -250,6 +251,82 @@ describe("Given the createMatch function", () => {
         res as Response,
         next
       );
+
+      expect(next).toHaveBeenCalledWith(customError);
+    });
+  });
+});
+
+describe("Given a getMatchById function", () => {
+  describe("When it receives a req object with an idMatch in its params property", () => {
+    test("Then it should receives a response that call its status method with a 200", async () => {
+      const idMatchResult = "djaijdo23aqe3cdw3";
+      const expectedStatusCode = 200;
+
+      const req: Partial<Request> = { params: { idMatch: idMatchResult } };
+      const res: Partial<Response> = {
+        status: jest.fn(),
+      };
+      const next: NextFunction = () => ({});
+
+      Match.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(idMatchResult),
+      }));
+
+      await getMatchById(req as Request, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+    });
+
+    test("Then it should receives a response that call its json method with an object with match property", async () => {
+      const match: MatchStructure = {
+        category: "",
+        date: new Date("1995-12-17T03:24:00"),
+        level: "",
+        paddleCourt: 7,
+        signedPlayersNumber: 2,
+        image: "",
+        allowedPlayersNumber: 4,
+      };
+      const idMatchResult = "djaijdo23aqe3cdw3";
+
+      const req: Partial<Request> = {
+        params: { idMatch: idMatchResult },
+      };
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(match),
+      };
+      const next = jest.fn();
+
+      Match.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(match),
+      }));
+
+      await getMatchById(req as Request, res as Response, next);
+
+      expect(res.json).toHaveBeenCalledWith({ match });
+    });
+  });
+
+  describe("When it receives a req object without an idMatch in its params property", () => {
+    test("Then it should receives a next function that is called with a custom error with the error 'Couldn't retrieve the match'", async () => {
+      const idMatchResult = "djaijdo23aqe3cdw3";
+      const customError = new CustomError(
+        "Couldn't retrieve the match",
+        500,
+        "Couldn't retrieve the match"
+      );
+
+      const req: Partial<Request> = { params: { idMatch: idMatchResult } };
+      const res: Partial<Response> = {};
+      const next: NextFunction = jest.fn();
+
+      Match.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockRejectedValue(customError),
+      }));
+
+      await getMatchById(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(customError);
     });

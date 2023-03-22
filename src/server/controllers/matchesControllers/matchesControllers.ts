@@ -72,3 +72,25 @@ export const createMatch = async (
     next(customError);
   }
 };
+
+export const getMatchById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { idMatch } = req.params;
+
+  try {
+    const match = await Match.findById(idMatch).exec();
+
+    res.status(200).json({ match });
+  } catch (error) {
+    const customError = new CustomError(
+      (error as Error).message,
+      500,
+      "Couldn't retrieve the match."
+    );
+
+    next(customError);
+  }
+};
